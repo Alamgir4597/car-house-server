@@ -24,18 +24,19 @@ async function run(){
         await client.connect();
         console.log(' db connected');
         const productCollection=client.db('assignment-eleven-db').collection('products');
+        const orderCollectoin = client.db('assignment-eleven-db').collection('order');
         app.post('/products', async(req,res)=>{
             const newProduct=req.body;
             console.log('add new product', newProduct);
             const result= await productCollection.insertOne(newProduct);
             res.send(result);
-        })
+        });
         app.get('/products', async(req,res)=>{
             const query={};
             const cusor = productCollection.find(query);
             const products=await cusor.toArray();
             res.send(products);
-        })
+        });
         app.get('/product/:id', async (req, res) => {
             const id = req.params.id;
            
@@ -69,7 +70,23 @@ async function run(){
             const query={_id:ObjectId(id)};
             const result= await productCollection.deleteOne(query);
             res.send(result);
-        })
+        });
+        app.post('/order', async(req,res)=>{
+            newOrder=req.body;
+            console.log('add new product', newOrder);
+            const result=  await orderCollectoin.insertOne(newOrder);
+            res.send(result);
+        });
+        app.get('/order', async (req, res) => {
+            const query = {};
+            const cusor = orderCollectoin.find(query);
+            const products = await cusor.toArray();
+            console.log(products)
+            res.send(products);
+        });
+        
+        
+        
 
     }
     finally{
